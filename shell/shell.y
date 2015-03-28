@@ -1,8 +1,9 @@
-%
+%{
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
+extern char** environ;
 //will probably need more stuff here
 
 
@@ -21,8 +22,14 @@ main()
 {
         yyparse();
 } 
+%}
 
 %token BYE SETENV UNSETENV PRINTENV CD
+%union   //links lex and yacc
+{
+char *str;
+}
+%token <str> WORD;  
 %%
 
 commands: /* empty */
@@ -30,15 +37,17 @@ commands: /* empty */
         ;
 
 command:
-       BYE
+       bye
        |
-       SETENV
+       setenv
        |
-       UNSETENV
+       unsetenv
        |
-       PRINTENV
+       printenv
        |
-       CD
+       cd
+       |
+       cd_args
        ;
 bye:
        BYE
@@ -64,15 +73,23 @@ unsetenv:
 printenv:
       PRINTENV
       {
-	//functionality
+	int i=0;
+	while(environ[i])
+           printf("%s\n",environ[i++]);
       }
       ;
 cd:
       CD
       {
-	//functionality
+	chdir("HOME");
       }
       ;
+cd_args:
+     CD WORD
+     {
+	printf("THIS RAN");
+     }
+     ;
 %%
 
 

@@ -2,10 +2,13 @@
 *.exe
 
 #Lex files
-*.yy.c
+*.yy.*
 
 #Yac files
 *.tab.*
 
 #ignore ~ files
 *~ 
+
+#ignore exe
+*.exe
