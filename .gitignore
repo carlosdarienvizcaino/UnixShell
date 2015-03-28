@@ -1,0 +1,11 @@
+# Executables
+*.exe
+
+#Lex files
+*.yy.c
+
+#Yac files
+*.tab.*
+
+#ignore ~ files
+*~ 
