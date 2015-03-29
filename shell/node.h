@@ -47,8 +47,8 @@ char* retrieveValue(alias_node **head, char* alias){
    
 }
 
-void alias_printList(alias_node **head){
-	alias_node* curr=*head;
+void alias_printList(alias_node *head){
+	alias_node* curr=head;
 	while(curr!=NULL){
 		printf("ALIAS: %s VALUE: %s\n",curr->alias,curr->value);
 		curr=curr->next;

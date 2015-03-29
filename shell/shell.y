@@ -31,7 +31,7 @@ void getDirectory(){  //test function to get current directory
 	}
 }
 
-main()
+int main()
 {
  	aliasNode=NULL;
         yyparse();
@@ -103,14 +103,13 @@ printenv:
 cd:
       CD WORD
       {
-        
+        //logic goes here.
       }
       ;
 cd_no_args:
      CD
      {
-	printf("CD RAN\n");
-	chdir("HOME");
+	chdir(getenv("HOME")); 
      }
      ;
 alias:
@@ -128,13 +127,13 @@ unalias:
 alias_no_args:
       ALIAS
       {
-      	alias_printList(&aliasNode);
+      	alias_printList(aliasNode);
       }
       ;
 test:
     TEST WORD
      {
-      printf("THIS RUNS");
+     getDirectory();
      }
 %%
 
