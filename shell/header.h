@@ -1,6 +1,9 @@
 #ifndef HEADER_H
 #define HEADER_H
-
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 char* get(char* string){
   char* s=getenv(string);
@@ -22,17 +25,4 @@ int set(char* string, char* string1){ //also need to check the validity of the s
     	return 0;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 #endif

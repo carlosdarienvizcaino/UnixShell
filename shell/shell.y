@@ -1,10 +1,13 @@
 %{
+#include "header.h"
+#include "node.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include "header.h"
 extern char** environ;
+alias_node *aliasNode;      //head of the alias list
+
 //will probably need more stuff here
 
 
@@ -30,11 +33,12 @@ void getDirectory(){  //test function to get current directory
 
 main()
 {
+ 	aliasNode=NULL;
         yyparse();
 } 
 %}
 
-%token BYE SETENV UNSETENV PRINTENV CD TEST
+%token BYE SETENV UNSETENV PRINTENV CD TEST ALIAS UNALIAS
 %union   //links lex and yacc
 {
 char *str;
@@ -59,12 +63,18 @@ command:
        |
        cd_no_args
        |
+       alias
+       |
+       unalias
+       |
+       alias_no_args
+       |
        test
        ;
 bye:
        BYE
        {
-	//call function and close the stream
+	exit(0);
        }
        ;
 
@@ -103,6 +113,24 @@ cd_no_args:
 	chdir("HOME");
      }
      ;
+alias:
+     ALIAS WORD WORD
+     {
+     	push(&aliasNode,$2,$3);
+     }
+     ;
+unalias:
+     UNALIAS WORD
+     {
+     	removeAlias(&aliasNode,$2);
+     }
+     ;
+alias_no_args:
+      ALIAS
+      {
+      	alias_printList(&aliasNode);
+      }
+      ;
 test:
     TEST WORD
      {
