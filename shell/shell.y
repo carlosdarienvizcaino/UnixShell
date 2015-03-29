@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include "header.h"
 extern char** environ;
 //will probably need more stuff here
 
@@ -16,15 +17,24 @@ void yyerror(const char *str)
 int yywrap()
 {
         return 1;
-} 
-  
+}
+
+void getDirectory(){  //test function to get current directory
+	size_t size= sizeof(char) * 1024;
+	char * buf= (char *)malloc(size);
+	char * cwd;
+	if((cwd = getcwd(buf,size))!=NULL){
+    	printf("Dir: %s\n",cwd);
+	}
+}
+
 main()
 {
         yyparse();
 } 
 %}
 
-%token BYE SETENV UNSETENV PRINTENV CD
+%token BYE SETENV UNSETENV PRINTENV CD TEST
 %union   //links lex and yacc
 {
 char *str;
@@ -47,7 +57,9 @@ command:
        |
        cd
        |
-       cd_args
+       cd_no_args
+       |
+       test
        ;
 bye:
        BYE
@@ -57,9 +69,9 @@ bye:
        ;
 
 setenv:
-      SETENV  //+ some words. Need to figure out.
+      SETENV WORD WORD
       {
-      	   //functionality
+      	  set($2,$3);
       }
       ;
 
@@ -79,17 +91,23 @@ printenv:
       }
       ;
 cd:
-      CD
+      CD WORD
       {
-	chdir("HOME");
+        
       }
       ;
-cd_args:
-     CD WORD
+cd_no_args:
+     CD
      {
-	printf("THIS RAN");
+	printf("CD RAN\n");
+	chdir("HOME");
      }
      ;
+test:
+    TEST WORD
+     {
+      printf("THIS RUNS");
+     }
 %%
 
 
