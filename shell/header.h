@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <dirent.h>
 
 char* get(char* string){
   char* s=getenv(string);
@@ -24,5 +25,27 @@ int set(char* string, char* string1){ //also need to check the validity of the s
     	printf("Environment variable is not valid");
     	return 0;
     }
+}
+
+char* getDirectory(){  //test function to get current directory
+	size_t size= sizeof(char) * 1024;
+	char * buf= (char *)malloc(size);
+	char * cwd;
+	if((cwd = getcwd(buf,size))!=NULL){
+    	 return cwd;
+	}
+	return;
+}
+
+void printContentInCurrentDirectory(){
+	
+	printf("Inside the function\n");
+	char* currentDirectory = getDirectory();
+	DIR* dirp = opendir( getDirectory() );
+	struct dirent* dp;
+	while ((dp = readdir(dirp)) != NULL){
+		
+		printf("Working...");	
+	}
 }
 #endif

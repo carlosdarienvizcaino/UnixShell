@@ -14,6 +14,7 @@ setenv		return SETENV;
 unsetenv 	return UNSETENV;
 printenv	return PRINTENV;
 cd		return CD;
+ls		return LS;
 [A-Z]+		yylval.str=yytext; return WORD;
 [$][a-zA-Z]+	yylval.str=yytext; return WORD; //not fully correct 
 alias		return ALIAS;

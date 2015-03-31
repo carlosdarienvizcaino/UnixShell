@@ -22,15 +22,6 @@ int yywrap()
         return 1;
 }
 
-void getDirectory(){  //test function to get current directory
-	size_t size= sizeof(char) * 1024;
-	char * buf= (char *)malloc(size);
-	char * cwd;
-	if((cwd = getcwd(buf,size))!=NULL){
-    	printf("Dir: %s\n",cwd);
-	}
-}
-
 int main()
 {
  	aliasNode=NULL;
@@ -38,7 +29,7 @@ int main()
 } 
 %}
 
-%token BYE SETENV UNSETENV PRINTENV CD TEST ALIAS UNALIAS
+%token BYE SETENV UNSETENV PRINTENV CD TEST ALIAS UNALIAS LS
 %union   //links lex and yacc
 {
 char *str;
@@ -130,10 +121,17 @@ alias_no_args:
       	alias_printList(aliasNode);
       }
       ;
+ls:
+      LS
+       {
+	  printf("Works");
+          printContentInCurrentDirectory();
+       }
+       ;
 test:
     TEST WORD
      {
-     getDirectory();
+    	printf("Test\n");
      }
 %%
 
