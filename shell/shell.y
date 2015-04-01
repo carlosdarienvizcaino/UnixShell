@@ -22,10 +22,19 @@ int yywrap()
         return 1;
 }
 
+void printPrompt(){
+	printf(">");
+}
+
 int main()
 {
- 	aliasNode=NULL;
+aliasNode=NULL;
+int i=0;
+	while(1){
+	printPrompt();
         yyparse();
+	printf("%d",i++);
+}
 } 
 %}
 
