@@ -60,6 +60,8 @@ command:
        |
        alias_no_args
        |
+       ls
+       |
        test
        ;
 bye:
