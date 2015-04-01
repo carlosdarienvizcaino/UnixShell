@@ -16,6 +16,18 @@ int valid(char* string){
    return s!=NULL? 1:0;
 }
 
+void goToDirectory(char *s){
+
+	printf("Print insde goToDirectory\n");
+	DIR* dirp = opendir( s );
+	if ( dirp == NULL){
+
+		printf("Invalid file path\n");
+		return;
+	}
+	chdir(getenv(s)); 
+}
+
 int set(char* string, char* string1){ //also need to check the validity of the second string
     if(get(string)){
     	setenv(string,string1,1);
@@ -34,7 +46,7 @@ char* getDirectory(){  //test function to get current directory
 	if((cwd = getcwd(buf,size))!=NULL){
     	 return cwd;
 	}
-	return;
+	return NULL;
 }
 
 void printContentInCurrentDirectory(){

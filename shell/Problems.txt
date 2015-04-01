@@ -1,0 +1,10 @@
+
+
+/*
+	Problems to solve:
+*/
+
+1. ls: is printing some ".." that don't make sense.
+2. cd: break out of the yyparse() in shell.y
+3. Comprehensive list of commands?
+4. alias: alias are not printing correctly.

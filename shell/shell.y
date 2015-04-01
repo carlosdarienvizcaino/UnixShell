@@ -31,10 +31,10 @@ int main()
 aliasNode=NULL;
 int i=0;
 	while(1){
-	printPrompt();
-        yyparse();
-	printf("%d",i++);
-}
+    printPrompt();
+    yyparse();
+    printf("%d",i++);
+  }
 } 
 %}
 
@@ -105,19 +105,20 @@ printenv:
 cd:
       CD WORD
       {
-        //logic goes here.
+        printf("Inside CD WORD\n");
+        goToDirectory($2);
       }
       ;
 cd_no_args:
      CD
      {
-	chdir(getenv("HOME")); 
+	     chdir(getenv("HOME")); 
      }
      ;
 alias:
      ALIAS WORD WORD
      {
-     	push(&aliasNode,$2,$3);
+     	  push(&aliasNode,$2,$3);
      }
      ;
 unalias:
