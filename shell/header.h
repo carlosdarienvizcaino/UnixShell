@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <dirent.h> 
+#include "y.tab.h"
 /* prototypes */
 char* concat(char *s1, char *s2);
 void goToDirectory(char *s);
@@ -20,20 +21,16 @@ int valid(char* string){
    return s!=NULL? 1:0;
 }
 
-void goToDirectory(char *s){
+void goToDirectory(char *s){ //I dont think I need this.
 	
-	printf("Inside goToDirectory()\n");
 	char *k=getCurrentDirectory();
-	printf("After: getCurrentDirectory()\n");
 	while ( k != '\0'){
 
 		printf("%c", *k++);
 	}
 	//char *k = "hello";
-	printf("After: getCurrentDirectory()\n");
 	//char *c=concat(k,s);
 	char *c = strcat(k,s);
-	printf("After: concat\n");
 	chdir(c);
 }
 

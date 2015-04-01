@@ -29,11 +29,9 @@ void printPrompt(){
 int main()
 {
 aliasNode=NULL;
-int i=0;
 while(1){
     printPrompt();
     yyparse();
-    printf("%d",i++);
   }
 } 
 %}
@@ -105,7 +103,7 @@ printenv:
 cd:
       CD WORD
       {
-        goToDirectory($2);
+        chdir($2);
       }
       ;
 cd_no_args:

@@ -15,11 +15,11 @@ unsetenv 	return UNSETENV;
 printenv	return PRINTENV;
 cd		return CD;
 ls		return LS;
-[a-zA-Z]+		return WORD;
+[a-zA-Z]+	yylval.str=yytext; return WORD;
 alias		return ALIAS;
 unalias		return UNALIAS;
 test		return TEST;
-\n
+\n		{ return -1; }
 [ \t]+         /* ignore whitespace */;
 
 %%
