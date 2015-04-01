@@ -44,8 +44,9 @@ void printContentInCurrentDirectory(){
 	DIR* dirp = opendir( getDirectory() );
 	struct dirent* dp;
 	while ((dp = readdir(dirp)) != NULL){
-		
-		printf("Working...");	
+		printf("%s ",dp->d_name);
+		dp++;
 	}
+	printf("\n");
 }
 #endif

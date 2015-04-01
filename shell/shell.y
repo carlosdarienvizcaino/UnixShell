@@ -126,7 +126,6 @@ alias_no_args:
 ls:
       LS
        {
-	  printf("Works");
           printContentInCurrentDirectory();
        }
        ;
