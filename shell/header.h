@@ -4,7 +4,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <dirent.h>
+#include <dirent.h> 
+/* prototypes */
+char* concat(char *s1, char *s2);
 
 char* get(char* string){
   char* s=getenv(string);
@@ -17,15 +19,9 @@ int valid(char* string){
 }
 
 void goToDirectory(char *s){
-
-	printf("Print insde goToDirectory\n");
-	DIR* dirp = opendir( s );
-	if ( dirp == NULL){
-
-		printf("Invalid file path\n");
-		return;
-	}
-	chdir(getenv(s)); 
+	char *k=getCurrentDirectory();
+	char *c=concat(k,s);
+	chdir(c);
 }
 
 int set(char* string, char* string1){ //also need to check the validity of the second string
@@ -39,7 +35,7 @@ int set(char* string, char* string1){ //also need to check the validity of the s
     }
 }
 
-char* getDirectory(){  //test function to get current directory
+char* getCurrentDirectory(){  //test function to get current directory
 	size_t size= sizeof(char) * 1024;
 	char * buf= (char *)malloc(size);
 	char * cwd;
@@ -52,13 +48,21 @@ char* getDirectory(){  //test function to get current directory
 void printContentInCurrentDirectory(){
 	
 	printf("Inside the function\n");
-	char* currentDirectory = getDirectory();
-	DIR* dirp = opendir( getDirectory() );
+	char* currentDirectory = getCurrentDirectory();
+	DIR* dirp = opendir( getCurrentDirectory() );
 	struct dirent* dp;
 	while ((dp = readdir(dirp)) != NULL){
 		printf("%s ",dp->d_name);
 		dp++;
 	}
 	printf("\n");
+}
+
+/* taken from stackoverflow */
+char* concat(char *s1, char *s2){
+    char *result = malloc(strlen(s1)+strlen(s2)+1);
+    strcpy(result, s1);
+    strcat(result, s2);
+    return result;
 }
 #endif

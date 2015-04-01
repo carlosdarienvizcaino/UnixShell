@@ -30,7 +30,7 @@ int main()
 {
 aliasNode=NULL;
 int i=0;
-	while(1){
+while(1){
     printPrompt();
     yyparse();
     printf("%d",i++);
@@ -105,7 +105,6 @@ printenv:
 cd:
       CD WORD
       {
-        printf("Inside CD WORD\n");
         goToDirectory($2);
       }
       ;
