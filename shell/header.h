@@ -7,6 +7,8 @@
 #include <dirent.h> 
 /* prototypes */
 char* concat(char *s1, char *s2);
+void goToDirectory(char *s);
+char* getCurrentDirectory();
 
 char* get(char* string){
   char* s=getenv(string);
@@ -19,8 +21,19 @@ int valid(char* string){
 }
 
 void goToDirectory(char *s){
+	
+	printf("Inside goToDirectory()\n");
 	char *k=getCurrentDirectory();
-	char *c=concat(k,s);
+	printf("After: getCurrentDirectory()\n");
+	while ( k != '\0'){
+
+		printf("%c", *k++);
+	}
+	//char *k = "hello";
+	printf("After: getCurrentDirectory()\n");
+	//char *c=concat(k,s);
+	char *c = strcat(k,s);
+	printf("After: concat\n");
 	chdir(c);
 }
 
@@ -40,6 +53,8 @@ char* getCurrentDirectory(){  //test function to get current directory
 	char * buf= (char *)malloc(size);
 	char * cwd;
 	if((cwd = getcwd(buf,size))!=NULL){
+
+		printf("%s",cwd);
     	 return cwd;
 	}
 	return NULL;
@@ -60,7 +75,10 @@ void printContentInCurrentDirectory(){
 
 /* taken from stackoverflow */
 char* concat(char *s1, char *s2){
+
+	printf("Before: malloc\n");
     char *result = malloc(strlen(s1)+strlen(s2)+1);
+    printf("After: malloc\n");
     strcpy(result, s1);
     strcat(result, s2);
     return result;
