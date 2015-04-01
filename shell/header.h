@@ -5,12 +5,55 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <dirent.h> 
-#include "y.tab.h"
-/* prototypes */
-char* concat(char *s1, char *s2);
-void goToDirectory(char *s);
-char* getCurrentDirectory();
 
+/******STRUCTS*******/
+typedef struct node{
+   char* alias;
+   char* value;
+   struct node* next;
+} alias_node;
+
+
+/***********************/
+
+
+/******PROTOTYPES********/
+extern char** environ;
+alias_node *aliasNode;      //head of the alias list
+
+//static inline void yyerror(const char *str);
+//static inline int yywrap();
+static inline char* concat(char *s1, char *s2);
+static inline void goToDirectory(char *s);
+static inline char* getCurrentDirectory();
+static inline int set(char* string, char* string1);
+static inline char* get(char* string);
+static inline int valid(char* string);
+static inline void printPrompt();
+static inline char* getCurrentDirectory();
+static inline void printContentInCurrentDirectory();
+static inline  void push(alias_node **head, char* alias, char* value);
+static inline  char* retrieveValue(alias_node **head, char* alias);
+static inline void alias_printList(alias_node *head);
+static inline  int removeAlias(alias_node **head,char *alias);
+
+/****************************/
+
+
+/***********YACC**************/
+
+
+void printPrompt(){
+	printf(">");
+}
+/*******************************/
+
+
+
+
+
+
+/*********FUNCTIONS***************/
 char* get(char* string){
   char* s=getenv(string);
   printf("%s\n",s);
@@ -71,6 +114,7 @@ void printContentInCurrentDirectory(){
 }
 
 /* taken from stackoverflow */
+/*
 char* concat(char *s1, char *s2){
 
 	printf("Before: malloc\n");
@@ -80,4 +124,83 @@ char* concat(char *s1, char *s2){
     strcat(result, s2);
     return result;
 }
+*/
+
+/*************************************************************************/
+
+
+/*****************LINKED LISTS***********************/
+
+
+void push(alias_node **head, char* alias, char* value){
+	alias_node* curr=*head;
+        alias_node* newNode= (alias_node*)malloc(sizeof(alias_node));
+        newNode->alias=alias;
+        newNode->value=value;
+	newNode->next=NULL;
+	if(curr!=NULL){
+       		 while((curr->next != NULL) && (strcmp(curr->alias,alias)!=0)){
+        	  	curr=curr->next;
+		 }
+		 if(strcmp(curr->alias,alias)==0){
+                      curr->value=value;
+                      free(newNode);
+                 }
+                 else
+                      curr->next=newNode;
+       }
+       else{
+       		*head=newNode;
+       }
+}
+
+char* retrieveValue(alias_node **head, char* alias){
+	alias_node* curr=*head;
+	while(curr!=NULL && strcmp(curr->alias,alias)!=0){
+       		curr=curr->next;
+        }
+	if(strcmp(curr->alias,alias)==0){
+		return curr->value;
+	}
+
+	return 0;
+   
+}
+
+void alias_printList(alias_node *head){
+	alias_node* curr=head;
+	while(curr!=NULL){
+		printf("ALIAS: %s VALUE: %s\n",curr->alias,curr->value);
+		curr=curr->next;
+	}
+}
+
+int removeAlias(alias_node **head,char *alias){
+	alias_node* curr=*head;
+	alias_node* prev=NULL;
+	int ran=0;
+        while(curr!=NULL && strcmp(curr->alias,alias)!=0){
+		prev=curr;
+		curr=curr->next;
+		ran=1;
+	}
+	if(ran==0){
+		free(*head);
+		*head=curr->next;
+		return 1;
+	}
+	if(strcmp(curr->alias,alias)==0 && curr->next!=NULL){
+		prev->next=curr->next;
+		//free(curr);  //check later. I think I can free the memory.
+		return 1;
+	}
+	else{
+		prev->next=NULL;
+		return 1;	
+	}
+
+	return 0;
+}
+
+
 #endif
