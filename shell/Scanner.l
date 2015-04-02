@@ -13,7 +13,7 @@ ls		return LS;
 alias		return ALIAS;
 unalias		return UNALIAS;
 test		return TEST;
-[a-zA-Z0-9\-\*\.\/(\$\{.*\})]+ { yylval.str=yytext; return WORD; }
+[a-zA-Z0-9\-\*\.\/(\$\{.*\})]+ { yylval.str=strdup(yytext); return WORD; }
 \n		{ return -1; }
 [ \t]+         /* ignore whitespace */;
 

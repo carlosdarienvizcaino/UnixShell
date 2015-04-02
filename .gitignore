@@ -12,3 +12,7 @@
 
 #ignore exe
 *.exe
+
+
+#ignore output files
+*.output

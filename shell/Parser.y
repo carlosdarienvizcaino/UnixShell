@@ -94,7 +94,7 @@ cd_no_args:
 alias:
      ALIAS WORD WORD
      {
-     	  push(&aliasNode,$2,$3);
+     	push(&aliasNode,$2,$3);
      }
      ;
 unalias:
