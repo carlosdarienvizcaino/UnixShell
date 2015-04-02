@@ -10,10 +10,10 @@ unsetenv 	return UNSETENV;
 printenv	return PRINTENV;
 cd		return CD;
 ls		return LS;
-[a-zA-Z]+	yylval.str=yytext; return WORD;
 alias		return ALIAS;
 unalias		return UNALIAS;
 test		return TEST;
+[a-zA-Z0-9\-\*\.\/(\$\{.*\})]+ { yylval.str=yytext; return WORD; }
 \n		{ return -1; }
 [ \t]+         /* ignore whitespace */;
 
