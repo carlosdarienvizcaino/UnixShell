@@ -53,7 +53,9 @@ command:
 bye:
        BYE
        {
-	exit(0);
+	command->name="bye";
+	command->args->args[0]=NULL;
+	perform();
        }
        ;
 
@@ -82,13 +84,17 @@ printenv:
 cd:
       CD WORD
       {
-        chdir($2);
+	command->name="cd";
+	command->args->args[0]=$2;
+	perform();
       }
       ;
 cd_no_args:
      CD
      {
-	     chdir(getenv("HOME")); 
+	     command->name="cd";
+	     command->args->args[0]=NULL;
+	     perform(); 
      }
      ;
 alias:

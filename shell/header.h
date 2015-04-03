@@ -6,6 +6,21 @@
 #include <unistd.h>
 #include <dirent.h> 
 
+
+/******GLOBAL CONSTANTS*******/
+#define MAXARGS 50
+#define OK 0
+#define ERROR 1
+
+/****************************/
+
+
+/********GLOBAL STRUCTURES*******/
+char input[1000];
+
+
+/******************************/
+
 /******STRUCTS*******/
 typedef struct node{
    char* alias;
@@ -13,6 +28,28 @@ typedef struct node{
    struct node* next;
 } alias_node;
 
+typedef struct comargs{
+	char* args[MAXARGS];
+
+} ARGS;
+
+typedef struct com{
+	char* name;
+	ARGS* args;
+} COM;
+
+/***********************************/
+
+/*********EXTERNS************/
+extern int yyparse();
+extern char yytext[];
+extern int yy_scan_string(const char*);
+
+/*****************************/
+
+/*********INITIALIZATIONS************/
+ARGS args;
+COM* command;
 
 /***********************/
 
@@ -21,8 +58,6 @@ typedef struct node{
 extern char** environ;
 alias_node *aliasNode;      //head of the alias list
 
-//static inline void yyerror(const char *str);
-//static inline int yywrap();
 static inline char* concat(char *s1, char *s2);
 static inline void goToDirectory(char *s);
 static inline char* getCurrentDirectory();
@@ -36,6 +71,10 @@ static inline  void push(alias_node **head, char* alias, char* value);
 static inline  char* retrieveValue(alias_node **head, char* alias);
 static inline void alias_printList(alias_node *head);
 static inline  int removeAlias(alias_node **head,char *alias);
+static inline void flushArguments();
+static inline void runLs(char* args);
+static inline int getCommand();
+static inline int perform();
 
 /****************************/
 
@@ -201,6 +240,39 @@ int removeAlias(alias_node **head,char *alias){
 
 	return 0;
 }
+
+/*****************************************************************/
+
+
+int getCommand(){
+	fgets(input,sizeof(input),stdin);
+	yy_scan_string(input);
+
+	if(yyparse()){
+		return ERROR;
+	}
+	else{
+		return OK;
+	}
+}
+
+int perform(){
+	char* com= command->name;
+	if(strcmp(com,"bye")==0) exit(0);
+
+	if(strcmp(com,"cd")==0 && command->args->args[0]==NULL ){
+		chdir(getenv("HOME"));
+	}
+	else{
+		chdir(command->args->args[0]);
+	}
+	
+}
+
+
+
+
+
 
 
 #endif
