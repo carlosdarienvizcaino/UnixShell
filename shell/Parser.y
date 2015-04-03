@@ -85,7 +85,7 @@ cd:
       CD WORD
       {
 	command->name="cd";
-	command->args->args[0]=$2;
+	command->args->args[0]=processCommand($2);
 	perform();
       }
       ;
@@ -100,7 +100,10 @@ cd_no_args:
 alias:
      ALIAS WORD WORD
      {
-     	push(&aliasNode,$2,$3);
+	command->name="alias";
+	command->args->args[0]=$2;
+	command->args->args[1]=$3;
+     	performAlias();
      }
      ;
 unalias:
@@ -118,13 +121,16 @@ alias_no_args:
 ls:
       LS
        {
-          printContentInCurrentDirectory();
+	//command->name="ls";
+	//command->args->args[0]=NULL;
+	//perform();
+	printContentInCurrentDirectory();
        }
        ;
 test:
     TEST WORD
      {
-    	printf("Test\n");
+    	printf("%s",getenv("PATH"));
      }
 %%
 

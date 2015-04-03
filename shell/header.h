@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <dirent.h> 
+#include  <sys/types.h>
+#include <sys/wait.h>
 
 
 /******GLOBAL CONSTANTS*******/
@@ -75,6 +77,8 @@ static inline void flushArguments();
 static inline void runLs(char* args);
 static inline int getCommand();
 static inline int perform();
+static inline int performAlias();
+static inline int processCommand(char *c);
 
 /****************************/
 
@@ -266,8 +270,27 @@ int perform(){
 	else{
 		chdir(command->args->args[0]);
 	}
-	
+	//add ls fork thing here
+
+
 }
+
+int performAlias(){
+	push(&aliasNode,command->args->args[0],command->args->args[1]);
+	return 1;
+}
+
+
+
+int processCommand(char *c){      //fix this. Kind of doing it right now but yeah. Maybe add more arguments. 
+	char* temp;
+	if(retrieveValue(&aliasNode,c))return retrieveValue(&aliasNode,c);
+	else return 0;
+
+}
+
+	
+
 
 
 
