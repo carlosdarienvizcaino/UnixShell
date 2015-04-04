@@ -73,12 +73,15 @@ static inline  void push(alias_node **head, char* alias, char* value);
 static inline  char* retrieveValue(alias_node **head, char* alias);
 static inline void alias_printList(alias_node *head);
 static inline  int removeAlias(alias_node **head,char *alias);
+static inline int aliasExists(alias_node **head,char *alias);
 static inline void flushArguments();
 static inline void runLs(char* args);
 static inline int getCommand();
 static inline int perform();
 static inline int performAlias();
-static inline int processCommand(char *c);
+static inline char* processCDcommand(char *c);
+static inline int checkForInfiniteAlias(char *c);
+static inline char* returnNestedAlias(char *c);
 
 /****************************/
 
@@ -210,6 +213,17 @@ char* retrieveValue(alias_node **head, char* alias){
    
 }
 
+int aliasExists(alias_node **head,char *alias){
+	alias_node* curr=*head;
+	while(curr!=NULL){
+		if(strcmp(curr->alias,alias)==0)
+			return 1;
+       curr=curr->next;
+        }
+return 0;
+
+}
+
 void alias_printList(alias_node *head){
 	alias_node* curr=head;
 	while(curr!=NULL){
@@ -280,11 +294,42 @@ int performAlias(){
 	return 1;
 }
 
+int checkForInfiniteAlias(char *c){
+	char* currVal;
+	char* nextVal;
+	if(aliasExists(&aliasNode,c)){
+		currVal=retrieveValue(&aliasNode,c);
+		if(aliasExists(&aliasNode,currVal)){
+			nextVal=retrieveValue(&aliasNode,currVal);
+		}
+		if(strcmp(c,nextVal)==0) return 1;
+	}
+	return 0;
+}
+
+char* returnNestedAlias(char *c){
+	char* currVal;
+	if(aliasExists(&aliasNode,c)){
+		currVal=retrieveValue(&aliasNode,c);
+		if(aliasExists(&aliasNode,currVal)){
+			return retrieveValue(&aliasNode,currVal);
+		}
+	}
+	return 0;
+}
 
 
-int processCommand(char *c){      //fix this. Kind of doing it right now but yeah. Maybe add more arguments. 
-	char* temp;
-	if(retrieveValue(&aliasNode,c))return retrieveValue(&aliasNode,c);
+
+char* processCDcommand(char *c){      //fix this. Kind of doing it right now but yeah. Maybe add more arguments. 
+	if(checkForInfiniteAlias(c)){
+		printf("INFINITE ALIAS\n");
+		return (char*)2;
+	}
+	if(aliasExists(&aliasNode,c)){
+		if(returnNestedAlias(c)!=0)
+			return returnNestedAlias(c);
+		return retrieveValue(&aliasNode,c);
+	}
 	else return 0;
 
 }

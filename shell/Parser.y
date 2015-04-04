@@ -85,8 +85,13 @@ cd:
       CD WORD
       {
 	command->name="cd";
-	command->args->args[0]=processCommand($2);
-	perform();
+	char* returnVal=processCDcommand($2);
+	if(returnVal==(char*)2){}
+	else{
+		if(returnVal!=0) command->args->args[0]=returnVal;
+		else command->args->args[0]=$2;
+		perform();
+	}
       }
       ;
 cd_no_args:
