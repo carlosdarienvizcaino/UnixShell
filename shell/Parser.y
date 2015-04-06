@@ -67,9 +67,9 @@ setenv:
       ;
 
 unsetenv:
-      UNSETENV //+ a word or two(I believe)
+      UNSETENV WORD
       {
-	//functionality
+	     unsetenv($2);
       }
       ;
 
@@ -135,7 +135,7 @@ ls:
 test:
     TEST WORD
      {
-    	printf("%s",getenv("PATH"));
+    	printf("%s\n",$2);
      }
 %%
 
