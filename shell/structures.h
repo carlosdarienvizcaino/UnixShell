@@ -33,7 +33,7 @@ typedef struct arguments{
 
 typedef struct command{
 	char* name;
-	int count;
+	int args_count;
 	ARGS* args;
 } COMMAND;
 
