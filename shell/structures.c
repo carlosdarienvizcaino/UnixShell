@@ -1,22 +1,7 @@
 #include "structures.h"
 
 char *builtInList[]={"setenv","printenv","unsetenv", "cd", "alias", "unalias","bye", "\0"};
-
-
-/********************** COMMAND METHODS  *****************/
-COMMAND* getNewCommand(){
-
-	printf("Before seg\n");
-	COMMAND* newCommand = (COMMAND*)malloc(sizeof(COMMAND));
-	printf("After seg\n");
-    newCommand->argsCount = 0; 
-   	return newCommand;
-}
-
-int checkForMetaChar(char* c){
-
-	return 0;
-}
+char *commandList[]={"ls","\0"};
 
 /**********************ALIAS LIST METHODS****************/
 
@@ -129,14 +114,27 @@ char* returnNestedAlias(char *c){
 
 		
 /**************************************************************/
-
 int checkForBuiltIn(char *c){
 	int i=0;
-	while(i++<7){
+	while(strcmp(builtInList[i],"\0") != 0){
+		
 		if(strcmp(c,builtInList[i])==0){
 			return 1;
 		}
 
+	}
+	return 0;
+}
+/**************************************************************/
+int checkForCommand(char *c){
+	int i=0;
+	while( strcmp(commandList[i],"\0") != 0 ){
+		
+		if(strcmp(c,commandList[i])==0){
+			
+			return 1;
+		}
+		i++;
 	}
 	return 0;
 }

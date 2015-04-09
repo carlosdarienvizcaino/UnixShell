@@ -39,12 +39,12 @@ typedef struct command{
 	pid_t process;
 	int pipe[2];
 	int argsCount;
-	ARGS* args;
+	char* args[MAXARGS];
 } COMMAND;
 
  // Table to store all commands
-COMMAND *CommandTable[MAXCMDS];
-char* metaChars[MAXMETACHARS];
+COMMAND CommandTable[MAXCMDS];
+char* MetaCharsTable[MAXMETACHARS];
 
 /****externs******/
 
@@ -59,7 +59,7 @@ extern char** environ;
 
 /*****builtin Commands****/
 extern char *builtInList[];
-
+extern char *commandList[];
 
 
 void push(alias_node **head, char* alias, char* value);
@@ -70,8 +70,7 @@ int removeAlias(alias_node **head,char *alias);
 int checkForInfiniteAlias(char *c);
 char* returnNestedAlias(char *c);
 int checkForBuiltIn(char* c);
-COMMAND* getNewCommand();
-int checkForMetaChar(char* c);
+int checkForCommand(char *c);
 
 
 #endif

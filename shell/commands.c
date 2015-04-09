@@ -1,20 +1,87 @@
 #include "commands.h"
+#include "structures.h"
+#include <stddef.h>
 
+// ----------------------------------------
+void createNewCommand(char* name){
+ 	
+	CommandTable[n_commands].name = name;
+	CommandTable[n_commands].argsCount = 0;
+	n_commands++;
+}
+// ----------------------------------------
+void addArgToCurrentCommand(char* arg){
 
+	int command_pos = n_commands -1; 
+	COMMAND* tempCommand = &CommandTable[ command_pos ];
+	tempCommand->args[ tempCommand->argsCount++ ] = arg;
+}
+// ----------------------------------------
+void addMetaCharToTable(char* arg){
+
+	MetaCharsTable[ metachar_count++ ] = arg;
+}
+// ----------------------------------------
+void printCommandTable(){
+
+	printf("Printing Command Table:\n");
+	int i, j;
+	for (i= 0; i < n_commands; i++){
+
+		printf("\n--------------------\n");
+		printf("Command Name: %s\n ", CommandTable[i].name);
+		for (j=0; j < CommandTable[i].argsCount; j++){
+
+			printf("\tArgs: %s\n", CommandTable[i].args[j]);
+		}
+
+		if ( metachar_count <= i){
+			for (j=0; j < metachar_count; j++){
+
+				printf("\tMeta Char(s) : %s\n", MetaCharsTable[j]);
+			}
+		}
+	}
+
+	printf("After command table\n");
+}
+// ----------------------------------------
+int checkForMetaChar(char* c){
+
+	printf("Inside checkForMetaChar() \n");
+	printf("Word: %s \n", c);
+	printf("Result %d\n", strcmp(c, "|") );
+
+	if ( strcmp(c, "|") == 0){
+
+		return 1;
+	}
+	else if (strcmp(c, ">") ==0){
+
+		return 1;
+	}
+	else if ( strcmp(c, "<") == 0){
+
+		return 1;
+	}
+
+	return 0;
+}
+// ----------------------------------------
 void printPrompt(){
 	printf("> ");
 }
-
-
+// ----------------------------------------
 void execute(){
-	char* command= CommandTable[0]->name;
-	char* first=CommandTable[0]->args->args[0];
-	char* second= CommandTable[0]->args->args[1];
+
+	char* command= CommandTable[0].name;
+	char* first=CommandTable[0].args[0];
+	char* second= CommandTable[0].args[1];
 
 	//if(aliasExecution(first)==1) return;
-	//else first=Command->args->args[0];
+	//else first=Command.args.args[0];
 
-
+	/*
 
 	if(strcmp(command,"cd")==0){
 		if(first==NULL){
@@ -50,28 +117,24 @@ void execute(){
     	exit(0);
     }
 	reset();
-
-
-
-	}
- 
-
-
-
-void reset(){
-	Command = (COMMAND*)malloc(sizeof(COMMAND));
-	Command->args= (ARGS *)malloc(sizeof(ARGS));
 	
-	n_commands=0;
-
+	*/
+	
+	}
+// ---------------------------------------- 
+void reset(){
+	
+	n_commands = 0; 
+	metachar_count = 0;
 }
-
-
+// ----------------------------------------
 int aliasExecution(char *c){
 	//if(checkForInfiniteAlias(c)==1){
 		//printf("Alias loop");
 		//return 1;
 	//}
+
+	/*
 	 if(returnNestedAlias(c)!=0){
 		printf("THIS RUNS\n");
 		Command->args->args[0]=returnNestedAlias(c);
@@ -79,6 +142,7 @@ int aliasExecution(char *c){
 	else if(aliasExists(&aliasNode,c)){
 		Command->args->args[0]= retrieveValue(&aliasNode,c);
 	}
+	*/
 	return 0;
 }
 

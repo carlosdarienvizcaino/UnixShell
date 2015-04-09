@@ -1,6 +1,7 @@
 
 %{
 #include "commands.h"
+#include "structures.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -19,11 +20,13 @@ int yywrap()
         return 1;
 }
 
+COMMAND* newCommand;
 %}
 
 
 %union   
 {
+
 char *str;
 struct arguments *arg;
 }
@@ -35,51 +38,40 @@ struct arguments *arg;
 %%
 
 commands: /* empty */
-      | commands arg_list {if(checkForBuiltIn(CommandTable[0]->name)==1) execute(); n_commands = 0; }
+        | commands arg_list { printCommandTable();}
 
 arg_list:
        WORD{
 
-           printf("COMMANDS: %d\n", n_commands);
-
-           // Creates a new Command: set argsCount to zero
-           COMMAND* newCommand = getNewCommand();
-
-           // Give a name to the command
-           newCommand->name = $1;
-
+           // Creates a new Command: set argsCount to zero and the name
+           reset();
+           createNewCommand($1);
         }
         |
         arg_list WORD{
 
           printf("%s\n", $2);
           
-          // Check if is a builtin command
-          if ( checkForBuiltIn($2)  || checkForMetaChar($2) ){
-
-              // Set the prev command to table 
+          // Check if is a buildin command
+          if ( checkForBuiltIn($2) || checkForCommand($2) ){
 
               // Create new command
+              createNewCommand($2);
 
-              // Increment command count
+          } 
+          else if (checkForMetaChar($2)){
 
-              if ( checkForMetaChar($2) ){
-
-                  // set character to metaChar array
-
-                  // Increment metachar count
-              }
+              // Add character to metaChar array
+              addMetaCharToTable($2);
           }
           else {
 
-              // set this argument to the argument of the current command
-
-              // increment argument count for this command
+              // Set this argument to the argument of the current command
+              addArgToCurrentCommand($2);
           }
 
         }
-
- ;
+        ;
        
 %%
 
