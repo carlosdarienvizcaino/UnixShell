@@ -36,19 +36,14 @@ typedef struct arguments{
 
 typedef struct command{
 	char* name;
-	int args_count;
+	pid_t process;
+	int pipe[2];
+	int argsCount;
 	ARGS* args;
 } COMMAND;
 
-typedef struct process_pipe{
-
-	pid_t process;
-	int pipe[2];
-}Process_Pipe;
-
-
-
-COMMAND *CommandTable[MAXCMDS];  //table to store all commands
+ // Table to store all commands
+COMMAND *CommandTable[MAXCMDS];
 char* metaChars[MAXMETACHARS];
 
 /****externs******/
@@ -74,8 +69,9 @@ void alias_printList(alias_node *head);
 int removeAlias(alias_node **head,char *alias);
 int checkForInfiniteAlias(char *c);
 char* returnNestedAlias(char *c);
-
 int checkForBuiltIn(char* c);
+COMMAND* getNewCommand();
+int checkForMetaChar(char* c);
 
 
 #endif

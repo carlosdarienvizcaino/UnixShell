@@ -2,6 +2,22 @@
 
 char *builtInList[]={"setenv","printenv","unsetenv", "cd", "alias", "unalias","bye", "\0"};
 
+
+/********************** COMMAND METHODS  *****************/
+COMMAND* getNewCommand(){
+
+	printf("Before seg\n");
+	COMMAND* newCommand = (COMMAND*)malloc(sizeof(COMMAND));
+	printf("After seg\n");
+    newCommand->argsCount = 0; 
+   	return newCommand;
+}
+
+int checkForMetaChar(char* c){
+
+	return 0;
+}
+
 /**********************ALIAS LIST METHODS****************/
 
 void push(alias_node **head, char* alias, char* value){
