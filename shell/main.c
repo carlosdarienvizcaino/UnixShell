@@ -23,6 +23,7 @@ int main(){
 CommandTable[MAXCMDS]= (COMMAND*) malloc((MAXCMDS)*sizeof(COMMAND));
 Command= (COMMAND*)malloc(sizeof(COMMAND));
 Command->args= (ARGS *)malloc(sizeof(ARGS));
+//metaChars[MAXMETACHARS]=(char*) malloc((MAXMETACHARS)*sizeof(char*));  //might fail in the future 
 shellInit();
 while(1){
   printPrompt();

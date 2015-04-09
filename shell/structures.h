@@ -14,9 +14,11 @@
 #define MAXCMDS 50
 #define OK 0
 #define ERROR 1
+#define MAXMETACHARS 50
 /****************************/
 
 int n_commands;
+int metachar_count;
 
 
 
@@ -47,6 +49,7 @@ typedef struct process_pipe{
 
 
 COMMAND *CommandTable[MAXCMDS];  //table to store all commands
+char* metaChars[MAXMETACHARS];
 
 /****externs******/
 
