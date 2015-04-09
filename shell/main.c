@@ -26,8 +26,9 @@ shellInit();
 commandTable = (COMMAND*)malloc(sizeof(COMMAND));
 commandTable->args= (ARGS *)malloc(sizeof(ARGS));
 while(1){
+  printPrompt();
   yyparse();
-  getCurrentDirectory();
+  //getCurrentDirectory();
   }
 
 } 

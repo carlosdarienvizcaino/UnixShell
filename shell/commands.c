@@ -1,13 +1,19 @@
 #include "commands.h"
 
 
-
+void printPrompt(){
+	printf("> ");
+}
 
 
 void execute(){
 	char* command= commandTable->name;
 	char* first=commandTable->args->args[0];
 	char* second= commandTable->args->args[1];
+
+	if(aliasExecution(first)==1) return;
+	else first=commandTable->args->args[0];
+
 
 
 	if(strcmp(command,"cd")==0){
@@ -52,17 +58,23 @@ void execute(){
 
 
 void reset(){
+	commandTable = (COMMAND*)malloc(sizeof(COMMAND));
+	commandTable->args= (ARGS *)malloc(sizeof(ARGS));
+	
+		
+
 	n_commands=0;
 	n_args=0;
+
 }
 
 
 int aliasExecution(char *c){
-	if(checkForInfiniteAlias(c)==1){
-		printf("Alias loop");
-		return 1;
-	}
-	else if(returnNestedAlias(c)!=0){
+	//if(checkForInfiniteAlias(c)==1){
+		//printf("Alias loop");
+		//return 1;
+	//}
+	 if(returnNestedAlias(c)!=0){
 		printf("THIS RUNS\n");
 		commandTable->args->args[0]=returnNestedAlias(c);
 	}
