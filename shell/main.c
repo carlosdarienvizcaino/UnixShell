@@ -2,7 +2,6 @@
 
 
 void shellInit(){
-	n_args=0;
 	n_commands=0;
 	aliasNode=NULL; //check this out.
 }
@@ -21,10 +20,10 @@ char* getCurrentDirectory(){  //test function to get current directory
 
 
 int main(){
-
-shellInit();
+CommandTable[MAXCMDS]= (COMMAND*) malloc((MAXCMDS)*sizeof(COMMAND));
 Command= (COMMAND*)malloc(sizeof(COMMAND));
 Command->args= (ARGS *)malloc(sizeof(ARGS));
+shellInit();
 while(1){
   printPrompt();
   yyparse();

@@ -11,12 +11,13 @@
 
 /******GLOBAL CONSTANTS*******/
 #define MAXARGS 50
+#define MAXCMDS 50
 #define OK 0
 #define ERROR 1
 /****************************/
 
 int n_commands;
-int n_args;
+
 
 
 /******STRUCTS*******/
@@ -44,6 +45,8 @@ typedef struct process_pipe{
 }Process_Pipe;
 
 
+
+COMMAND *CommandTable[MAXCMDS];  //table to store all commands
 
 /****externs******/
 

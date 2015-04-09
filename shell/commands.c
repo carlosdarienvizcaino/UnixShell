@@ -7,9 +7,9 @@ void printPrompt(){
 
 
 void execute(){
-	char* command= Command->name;
-	char* first=Command->args->args[0];
-	char* second= Command->args->args[1];
+	char* command= CommandTable[0]->name;
+	char* first=CommandTable[0]->args->args[0];
+	char* second= CommandTable[0]->args->args[1];
 
 	//if(aliasExecution(first)==1) return;
 	//else first=Command->args->args[0];
@@ -62,10 +62,7 @@ void reset(){
 	Command = (COMMAND*)malloc(sizeof(COMMAND));
 	Command->args= (ARGS *)malloc(sizeof(ARGS));
 	
-		
-
 	n_commands=0;
-	n_args=0;
 
 }
 
