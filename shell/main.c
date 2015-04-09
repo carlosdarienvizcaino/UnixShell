@@ -23,8 +23,8 @@ char* getCurrentDirectory(){  //test function to get current directory
 int main(){
 
 shellInit();
-commandTable = (COMMAND*)malloc(sizeof(COMMAND));
-commandTable->args= (ARGS *)malloc(sizeof(ARGS));
+Command= (COMMAND*)malloc(sizeof(COMMAND));
+Command->args= (ARGS *)malloc(sizeof(ARGS));
 while(1){
   printPrompt();
   yyparse();

@@ -1,7 +1,6 @@
 #include "structures.h"
 
-
-
+char *builtInList[]={"setenv","printenv","unsetenv", "cd", "alias", "unalias","bye", "\0"};
 
 /**********************ALIAS LIST METHODS****************/
 
@@ -55,7 +54,7 @@ return 0;
 void alias_printList(alias_node *head){
 	alias_node* curr=head;
 	while(curr!=NULL){
-		printf("ALIAS: %s VALUE: %s\n",curr->alias,curr->value);
+		printf("%s = %s\n",curr->alias,curr->value);
 		curr=curr->next;
 	}
 }
@@ -111,4 +110,17 @@ char* returnNestedAlias(char *c){
 	return 0;
 }
 
+
+		
 /**************************************************************/
+
+int checkForBuiltIn(char *c){
+	int i=0;
+	while(i++<7){
+		if(strcmp(c,builtInList[i])==0){
+			return 1;
+		}
+
+	}
+	return 0;
+}

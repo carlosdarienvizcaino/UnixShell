@@ -37,16 +37,21 @@ typedef struct command{
 } COMMAND;
 
 
+
 /****externs******/
 
 alias_node *aliasNode;
-COMMAND *commandTable;
+COMMAND *Command;
 extern int yyparse();
 extern char yytext[];
 extern int yy_scan_string(const char*);
 extern char** environ;
 
 /******************/
+
+/*****builtin Commands****/
+extern char *builtInList[];
+
 
 
 void push(alias_node **head, char* alias, char* value);
@@ -56,6 +61,8 @@ void alias_printList(alias_node *head);
 int removeAlias(alias_node **head,char *alias);
 int checkForInfiniteAlias(char *c);
 char* returnNestedAlias(char *c);
+
+int checkForBuiltIn(char* c);
 
 
 #endif

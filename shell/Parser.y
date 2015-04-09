@@ -37,16 +37,16 @@ struct arguments *arg;
 %%
 
 commands: /* empty */
-      | commands arg_list {execute();}
+      | commands arg_list {if(checkForBuiltIn(Command->name)==1) execute(); }
 
 arg_list:
        WORD{
-           commandTable->name=$1;
-           commandTable->args->args[0]=NULL; 
+           Command->name=$1;
+           Command->args->args[0]=NULL; 
         }
         |
         arg_list WORD{
-          commandTable->args->args[n_args++]=$2;
+          Command->args->args[n_args++]=$2;
 
         }
 

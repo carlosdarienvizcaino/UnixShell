@@ -7,12 +7,12 @@ void printPrompt(){
 
 
 void execute(){
-	char* command= commandTable->name;
-	char* first=commandTable->args->args[0];
-	char* second= commandTable->args->args[1];
+	char* command= Command->name;
+	char* first=Command->args->args[0];
+	char* second= Command->args->args[1];
 
-	if(aliasExecution(first)==1) return;
-	else first=commandTable->args->args[0];
+	//if(aliasExecution(first)==1) return;
+	//else first=Command->args->args[0];
 
 
 
@@ -36,7 +36,7 @@ void execute(){
     	if(first==NULL){
     		alias_printList(aliasNode);
     	}
-    	else if(first!=NULL && commandTable->args->args[1]!=NULL){
+    	else if(first!=NULL && Command->args->args[1]!=NULL){
     		push(&aliasNode,first,second);
     	}
     }
@@ -54,12 +54,13 @@ void execute(){
 
 
 	}
+ 
 
 
 
 void reset(){
-	commandTable = (COMMAND*)malloc(sizeof(COMMAND));
-	commandTable->args= (ARGS *)malloc(sizeof(ARGS));
+	Command = (COMMAND*)malloc(sizeof(COMMAND));
+	Command->args= (ARGS *)malloc(sizeof(ARGS));
 	
 		
 
@@ -76,10 +77,10 @@ int aliasExecution(char *c){
 	//}
 	 if(returnNestedAlias(c)!=0){
 		printf("THIS RUNS\n");
-		commandTable->args->args[0]=returnNestedAlias(c);
+		Command->args->args[0]=returnNestedAlias(c);
 	}
 	else if(aliasExists(&aliasNode,c)){
-		commandTable->args->args[0]= retrieveValue(&aliasNode,c);
+		Command->args->args[0]= retrieveValue(&aliasNode,c);
 	}
 	return 0;
 }
