@@ -47,7 +47,7 @@ arg_list:
         }
         |
         arg_list WORD{
-          CommandTable[n_commands]->args->args[CommandTable[n_commands]->count++]=$2;
+          CommandTable[n_commands]->args->args[CommandTable[n_commands]->args_count++]=$2;
 
         }
 
