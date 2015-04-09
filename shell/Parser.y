@@ -1,5 +1,13 @@
+
 %{
-#include "header.h"
+#include "commands.h"
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <dirent.h> 
+#include  <sys/types.h>
+#include <sys/wait.h>
 
 void yyerror(const char *str)
 {
@@ -14,129 +22,36 @@ int yywrap()
 %}
 
 
-
-%token BYE SETENV UNSETENV PRINTENV CD TEST ALIAS UNALIAS LS
-%union   //links lex and yacc
+%union   
 {
 char *str;
+struct arguments *arg;
 }
-%token <str> WORD;  
+
+%token <str> WORD
+%token <arg> argv
+%type<arg> arg_list
+
+
+
 %%
 
 commands: /* empty */
-        | commands command
-        ;
+      | commands arg_list {execute();}
 
-command:
-       bye
-       |
-       setenv
-       |
-       unsetenv
-       |
-       printenv
-       |
-       cd
-       |
-       cd_no_args
-       |
-       alias
-       |
-       unalias
-       |
-       alias_no_args
-       |
-       ls
-       |
-       test
-       ;
-bye:
-       BYE
-       {
-	command->name="bye";
-	command->args->args[0]=NULL;
-	perform();
-       }
-       ;
+arg_list:
+       WORD{
+           commandTable->name=$1;
+           commandTable->args->args[0]=NULL; 
+        }
+        |
+        arg_list WORD{
+          commandTable->args->args[n_args++]=$2;
 
-setenv:
-      SETENV WORD WORD
-      {
-      	  set($2,$3);
-      }
-      ;
+        }
 
-unsetenv:
-      UNSETENV WORD
-      {
-	     unsetenv($2);
-      }
-      ;
-
-printenv:
-      PRINTENV
-      {
-	int i=0;
-	while(environ[i])
-           printf("%s\n",environ[i++]);
-      }
-      ;
-cd:
-      CD WORD
-      {
-	command->name="cd";
-	char* returnVal=processCDcommand($2);
-	if(returnVal==(char*)2){}
-	else{
-		if(returnVal!=0) command->args->args[0]=returnVal;
-		else command->args->args[0]=$2;
-		perform();
-	}
-      }
-      ;
-cd_no_args:
-     CD
-     {
-	     command->name="cd";
-	     command->args->args[0]=NULL;
-	     perform(); 
-     }
-     ;
-alias:
-     ALIAS WORD WORD
-     {
-	command->name="alias";
-	command->args->args[0]=$2;
-	command->args->args[1]=$3;
-     	performAlias();
-     }
-     ;
-unalias:
-     UNALIAS WORD
-     {
-     	removeAlias(&aliasNode,$2);
-     }
-     ;
-alias_no_args:
-      ALIAS
-      {
-      	alias_printList(aliasNode);
-      }
-      ;
-ls:
-      LS
-       {
-	//command->name="ls";
-	//command->args->args[0]=NULL;
-	//perform();
-	printContentInCurrentDirectory();
-       }
-       ;
-test:
-    TEST WORD
-     {
-    	printf("%s\n",$2);
-     }
+ ;
+       
 %%
 
 
