@@ -33,8 +33,15 @@ typedef struct arguments{
 
 typedef struct command{
 	char* name;
+	int count;
 	ARGS* args;
 } COMMAND;
+
+typedef struct process_pipe{
+
+	pid_t process;
+	int pipe[2];
+}Process_Pipe;
 
 
 
