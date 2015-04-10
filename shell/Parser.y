@@ -38,7 +38,7 @@ struct arguments *arg;
 %%
 
 commands: /* empty */
-        | commands arg_list { printCommandTable();}
+        | commands arg_list {execute();}
 
 arg_list:
        WORD{
@@ -50,7 +50,7 @@ arg_list:
         |
         arg_list WORD{
 
-          printf("%s\n", $2);
+          //printf("%s\n", $2);
           
           // Check if is a buildin command
           if ( checkForBuiltIn($2) || checkForCommand($2) ){

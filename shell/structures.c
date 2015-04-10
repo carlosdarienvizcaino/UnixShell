@@ -121,7 +121,7 @@ int checkForBuiltIn(char *c){
 		if(strcmp(c,builtInList[i])==0){
 			return 1;
 		}
-
+	i++;
 	}
 	return 0;
 }

@@ -48,9 +48,7 @@ void printCommandTable(){
 // ----------------------------------------
 int checkForMetaChar(char* c){
 
-	printf("Inside checkForMetaChar() \n");
-	printf("Word: %s \n", c);
-	printf("Result %d\n", strcmp(c, "|") );
+	
 
 	if ( strcmp(c, "|") == 0){
 
@@ -74,53 +72,90 @@ void printPrompt(){
 // ----------------------------------------
 void execute(){
 
-	char* command= CommandTable[0].name;
-	char* first=CommandTable[0].args[0];
-	char* second= CommandTable[0].args[1];
+	int i;
+	for(i=0;i<n_commands;i++){
+		
+		if(checkForBuiltIn(CommandTable[i].name)){
+			runBuiltIn(i);
+		}
+		else if ( checkForCommand(CommandTable[i].name)){
 
-	//if(aliasExecution(first)==1) return;
-	//else first=Command.args.args[0];
+				runCommand(i);
 
-	/*
+			if ( checkForMetaChar(MetaCharsTable[i]) && metachar_count-1 >= i ){
+
+
+			}
+		}
+
+
+
+	}
+}
+
+
+void runPipe(){
+
+}
+
+void runCommand(int i){
+	char* command= CommandTable[i].name;
+	int n_args = CommandTable[i].argsCount;
+
+
+ 	if(strcmp(command,"ls")==0 && n_args==0){
+		printContentInCurrentDirectory();		
+
+ 	}
+
+
+}
+
+void runBuiltIn(int i){
+	char* command= CommandTable[i].name;
+	int n_args= CommandTable[i].argsCount;
 
 	if(strcmp(command,"cd")==0){
-		if(first==NULL){
+		if(n_args==0){
 			chdir(getenv("HOME"));
 		}
+		else if(n_args==1){
+			chdir(CommandTable[i].args[n_args-1]);
+		}
 		else{
-			chdir(first);
+			printf("ERROR: TOO MANY ARGUMENTS");
 		}
 	}
-	else if(strcmp(command,"setenv")==0){
-		setenv(first,second,1);
+	
+	else if(strcmp(command,"setenv")==0 && n_args==2){
+		setenv(CommandTable[i].args[n_args-2],CommandTable[i].args[n_args-1],1);
 	}
-	else if(strcmp(command,"printenv")==0){
+	else if(strcmp(command,"printenv")==0 && n_args==0){
 		int i=0;
 		while(environ[i])
            printf("%s\n",environ[i++]);
       }
+      
     else if(strcmp(command,"alias")==0){
-    	if(first==NULL){
-    		alias_printList(aliasNode);
-    	}
-    	else if(first!=NULL && Command->args->args[1]!=NULL){
+    	if(n_args==0) alias_printList(aliasNode);
+    	
+    	else if(n_args==2){
+    		char* first= CommandTable[i].args[n_args-2];
+    		char* second=CommandTable[i].args[n_args-1];
     		push(&aliasNode,first,second);
     	}
     }
-    else if(strcmp(command,"unalias")==0){
-    	if(first!=NULL){
+    
+    else if(strcmp(command,"unalias")==0 && n_args==1){
+    		char* first= CommandTable[i].args[0];
     		removeAlias(&aliasNode,first);
-    	}
     }
-
     else if(strcmp(command,"bye")==0){
     	exit(0);
     }
-	reset();
-	
-	*/
-	
-	}
+    
+	//reset();
+}
 // ---------------------------------------- 
 void reset(){
 	
@@ -145,4 +180,31 @@ int aliasExecution(char *c){
 	*/
 	return 0;
 }
+
+void printContentInCurrentDirectory(){
+	
+	printf("Inside the function\n");
+	char* currentDirectory = getCurrentDirectory();
+	DIR* dirp = opendir( getCurrentDirectory() );
+	struct dirent* dp;
+	while ((dp = readdir(dirp)) != NULL){
+		printf("%s ",dp->d_name);
+		dp++;
+	}
+	printf("\n");
+}
+
+
+char* getCurrentDirectory(){  //test function to get current directory
+	size_t size= sizeof(char) * 1024;
+	char * buf= (char *)malloc(size);
+	char * cwd;
+	if((cwd = getcwd(buf,size))!=NULL){
+
+		//printf("%s",cwd);
+    	 return cwd;
+	}
+	return NULL;
+}
+
 
