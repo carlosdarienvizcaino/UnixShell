@@ -1,6 +1,7 @@
 #ifndef COMMANDS_H
 #define COMMANDS_H
 #include "structures.h"
+#include "glob.h"
 
 void printPrompt();
 void execute();
@@ -17,5 +18,6 @@ void printCommandTable();
 char* getCurrentDirectory();
 void printContentInCurrentDirectory();
 void runPipe(int i);
+char** matchPattern(char** a, char** patternBuffer, int count);
 
 #endif 

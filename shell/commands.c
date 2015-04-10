@@ -90,7 +90,7 @@ void execute(){
 		else if ( checkForCommand(CommandTable[i].name)){
 
 				runCommand(i);
-
+				
 			// If this command has a correspointing meta character
 			if ( metachar_count-1 >= i ){
 
@@ -149,18 +149,34 @@ void runPipe(int i){
 
 void runCommand(int i){
 	
-
 	int status;
 	int n_args= CommandTable[i].argsCount;
 	char *a[n_args+1];
+	int check=0;
+	char *patternBuffer[n_args+1];
+	int patternBufferCount=0;
 	a[0]=CommandTable[i].name;
 	int k;
+	int n;
+	int count=1;
 	for(k=0;k<n_args;k++){
-		a[k+1]=CommandTable[i].args->args[k];
+		char* currentArg= CommandTable[i].args->args[k];
+		int currLength=strlen(currentArg);
+		for(n=0;n<currLength;n++){
+			if(currentArg[n]=='*' || currentArg[n]=='?') 
+				check=1;
+		}
+		if(check==0) a[count++]=CommandTable[i].args->args[k];
+		else patternBuffer[patternBufferCount++]=currentArg;
+		check=0;
 	}
-	a[n_args+1]=NULL;
+	//printf("IM HERE");
+	char** b;
+	if(patternBufferCount>0)
+	b= matchPattern(a,patternBuffer,count);
+	else b=a;
 	if ( fork() == 0 ){
-		execvp(CommandTable[i].name,a) ;
+		execvp(CommandTable[i].name,b) ;
 		exit(status);
 	}
 	else {
@@ -169,6 +185,26 @@ void runCommand(int i){
 	}
 
 	//printf("Exiting...\n");
+	
+}
+
+char** matchPattern(char** a, char** patternBuffer, int count){
+	int patternCount=1;
+	int k;
+	for(k=0;k<patternCount;k++){
+		glob_t glob_buffer;
+		const char * pattern = patternBuffer[k];
+		int i;
+		int match_count;
+		glob( pattern , 0 , NULL , &glob_buffer ); 
+		match_count = glob_buffer.gl_pathc;
+		for (i=0; i < match_count; i++){
+  	 		 a[count]=glob_buffer.gl_pathv[i];
+  	 		 count++;
+  	 		}
+		}
+	a[count]=NULL;
+	return &*a;
 }
 
 void runBuiltIn(int i){
