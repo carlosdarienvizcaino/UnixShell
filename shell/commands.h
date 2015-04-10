@@ -16,5 +16,6 @@ void runCommand(int i);
 void printCommandTable();
 char* getCurrentDirectory();
 void printContentInCurrentDirectory();
+void runPipe(int i);
 
 #endif 

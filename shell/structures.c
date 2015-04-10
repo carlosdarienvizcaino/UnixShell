@@ -1,7 +1,7 @@
 #include "structures.h"
 
 char *builtInList[]={"setenv","printenv","unsetenv", "cd", "alias", "unalias","bye", "\0"};
-char *commandList[]={"ls","\0"};
+char *commandList[]={"ls","pwd","\0"};
 
 /**********************ALIAS LIST METHODS****************/
 
@@ -121,8 +121,9 @@ int checkForBuiltIn(char *c){
 		if(strcmp(c,builtInList[i])==0){
 			return 1;
 		}
-	i++;
+		i++;
 	}
+
 	return 0;
 }
 /**************************************************************/

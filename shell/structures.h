@@ -39,7 +39,7 @@ typedef struct command{
 	pid_t process;
 	int pipe[2];
 	int argsCount;
-	char* args[MAXARGS];
+	ARGS* args;
 } COMMAND;
 
  // Table to store all commands

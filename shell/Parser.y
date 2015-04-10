@@ -50,10 +50,9 @@ arg_list:
         |
         arg_list WORD{
 
-          //printf("%s\n", $2);
-          
           // Check if is a buildin command
           if ( checkForBuiltIn($2) || checkForCommand($2) ){
+          //if (checkForCommand($2)){
 
               // Create new command
               createNewCommand($2);

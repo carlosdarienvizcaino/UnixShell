@@ -1,5 +1,11 @@
 #include "commands.h"
 #include "structures.h"
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <stddef.h>
 
 // ----------------------------------------
@@ -7,6 +13,10 @@ void createNewCommand(char* name){
  	
 	CommandTable[n_commands].name = name;
 	CommandTable[n_commands].argsCount = 0;
+	CommandTable[n_commands].args = (ARGS*)malloc(sizeof(ARGS));
+	CommandTable[n_commands].args->args[0] = "\0";
+	pipe(CommandTable[n_commands].pipe);
+
 	n_commands++;
 }
 // ----------------------------------------
@@ -14,7 +24,7 @@ void addArgToCurrentCommand(char* arg){
 
 	int command_pos = n_commands -1; 
 	COMMAND* tempCommand = &CommandTable[ command_pos ];
-	tempCommand->args[ tempCommand->argsCount++ ] = arg;
+	tempCommand->args->args[ tempCommand->argsCount++ ] = arg;
 }
 // ----------------------------------------
 void addMetaCharToTable(char* arg){
@@ -32,7 +42,7 @@ void printCommandTable(){
 		printf("Command Name: %s\n ", CommandTable[i].name);
 		for (j=0; j < CommandTable[i].argsCount; j++){
 
-			printf("\tArgs: %s\n", CommandTable[i].args[j]);
+			printf("\tArgs: %s\n", CommandTable[i].args->args[j]);
 		}
 
 		if ( metachar_count <= i){
@@ -44,11 +54,10 @@ void printCommandTable(){
 	}
 
 	printf("After command table\n");
+
 }
 // ----------------------------------------
 int checkForMetaChar(char* c){
-
-	
 
 	if ( strcmp(c, "|") == 0){
 
@@ -82,33 +91,79 @@ void execute(){
 
 				runCommand(i);
 
-			if ( checkForMetaChar(MetaCharsTable[i]) && metachar_count-1 >= i ){
+			// If this command has a correspointing meta character
+			if ( metachar_count-1 >= i ){
 
+				if (strcmp("|",MetaCharsTable[i])==0){
 
+					runPipe(i);
+				}
 			}
+			
 		}
-
-
-
 	}
 }
 
 
-void runPipe(){
+void runPipe(int i){
 
+	int status;
+	// If process was prepared successfully
+	if ( (CommandTable[i].process = fork()) == 0 ){
+
+		int lastCommand = n_commands - 1;
+		char buffer[100];
+		
+		// Only Command
+		if ( n_commands == 1){
+
+
+		}
+		// First Command
+		else if ( i == 0){
+				
+				dup2(CommandTable[i].pipe[1], STDOUT_FILENO);
+				
+		}		
+		// Last Commad
+		else if ( i == (n_commands-1) ){
+
+				// Process N reads from process N-1
+	        	dup2(CommandTable[i].pipe[0], STDIN_FILENO);
+	        
+	    }
+	    // Default case:
+	    else {
+
+	    		// Process N + 1 reads from process N
+	        	dup2(CommandTable[i].pipe[0], STDIN_FILENO);
+	        	// Process N + 1 writes to process 1
+	        	dup2(CommandTable[i].pipe[1], STDOUT_FILENO);
+
+	        	close(CommandTable[i+1].pipe[0]);
+	        
+	    }
+		wait(&status);
+	}
 }
 
 void runCommand(int i){
-	char* command= CommandTable[i].name;
-	int n_args = CommandTable[i].argsCount;
+	
 
+	int status;
 
- 	if(strcmp(command,"ls")==0 && n_args==0){
-		printContentInCurrentDirectory();		
+	if ( fork() == 0 ){
 
- 	}
+		char** a = CommandTable[i].args->args;
+		execvp(CommandTable[i].name, a) ;
+		exit(status);
+	}
+	else {
 
+		wait(&status);
+	}
 
+	printf("Exiting...\n");
 }
 
 void runBuiltIn(int i){
@@ -120,7 +175,7 @@ void runBuiltIn(int i){
 			chdir(getenv("HOME"));
 		}
 		else if(n_args==1){
-			chdir(CommandTable[i].args[n_args-1]);
+			chdir(CommandTable[i].args->args[n_args-1]);
 		}
 		else{
 			printf("ERROR: TOO MANY ARGUMENTS");
@@ -128,7 +183,7 @@ void runBuiltIn(int i){
 	}
 	
 	else if(strcmp(command,"setenv")==0 && n_args==2){
-		setenv(CommandTable[i].args[n_args-2],CommandTable[i].args[n_args-1],1);
+		setenv(CommandTable[i].args->args[n_args-2],CommandTable[i].args->args[n_args-1],1);
 	}
 	else if(strcmp(command,"printenv")==0 && n_args==0){
 		int i=0;
@@ -140,14 +195,14 @@ void runBuiltIn(int i){
     	if(n_args==0) alias_printList(aliasNode);
     	
     	else if(n_args==2){
-    		char* first= CommandTable[i].args[n_args-2];
-    		char* second=CommandTable[i].args[n_args-1];
+    		char* first= CommandTable[i].args->args[n_args-2];
+    		char* second=CommandTable[i].args->args[n_args-1];
     		push(&aliasNode,first,second);
     	}
     }
     
     else if(strcmp(command,"unalias")==0 && n_args==1){
-    		char* first= CommandTable[i].args[0];
+    		char* first= CommandTable[i].args->args[0];
     		removeAlias(&aliasNode,first);
     }
     else if(strcmp(command,"bye")==0){
@@ -183,7 +238,7 @@ int aliasExecution(char *c){
 
 void printContentInCurrentDirectory(){
 	
-	printf("Inside the function\n");
+	printf("Inside: printContentInCurrentDirectory()\n");
 	char* currentDirectory = getCurrentDirectory();
 	DIR* dirp = opendir( getCurrentDirectory() );
 	struct dirent* dp;
