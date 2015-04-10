@@ -151,11 +151,16 @@ void runCommand(int i){
 	
 
 	int status;
-
+	int n_args= CommandTable[i].argsCount;
+	char *a[n_args+1];
+	a[0]=CommandTable[i].name;
+	int k;
+	for(k=0;k<n_args;k++){
+		a[k+1]=CommandTable[i].args->args[k];
+	}
+	a[n_args+1]=NULL;
 	if ( fork() == 0 ){
-
-		char** a = CommandTable[i].args->args;
-		execvp(CommandTable[i].name, a) ;
+		execvp(CommandTable[i].name,a) ;
 		exit(status);
 	}
 	else {
@@ -163,7 +168,7 @@ void runCommand(int i){
 		wait(&status);
 	}
 
-	printf("Exiting...\n");
+	//printf("Exiting...\n");
 }
 
 void runBuiltIn(int i){

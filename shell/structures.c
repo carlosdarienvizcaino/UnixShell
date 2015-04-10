@@ -1,7 +1,7 @@
 #include "structures.h"
 
 char *builtInList[]={"setenv","printenv","unsetenv", "cd", "alias", "unalias","bye", "\0"};
-char *commandList[]={"ls","pwd","\0"};
+char *commandList[]={"ls","pwd","echo","wc","sort","whoami","rot13","chdir","\0"};
 
 /**********************ALIAS LIST METHODS****************/
 
