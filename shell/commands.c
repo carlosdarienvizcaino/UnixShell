@@ -80,6 +80,7 @@ void printPrompt(){
 }
 // ----------------------------------------
 void execute(){
+	
 
 	int i;
 	for(i=0;i<n_commands;i++){
@@ -88,8 +89,8 @@ void execute(){
 			runBuiltIn(i);
 		}
 		else if ( checkForCommand(CommandTable[i].name)){
-
-				runCommand(i);
+				God(0);
+				//runCommand(i);
 				
 			// If this command has a correspointing meta character
 			if ( metachar_count-1 >= i ){
@@ -102,6 +103,7 @@ void execute(){
 			
 		}
 	}
+	
 }
 
 
@@ -170,7 +172,6 @@ void runCommand(int i){
 		else patternBuffer[patternBufferCount++]=currentArg;
 		check=0;
 	}
-	//printf("IM HERE");
 	char** b;
 	if(patternBufferCount>0)
 	b= matchPattern(a,patternBuffer,count);
@@ -206,6 +207,19 @@ char** matchPattern(char** a, char** patternBuffer, int count){
 	a[count]=NULL;
 	return &*a;
 }
+
+void God(int i){
+	int status;
+	if ( fork() == 0 ){
+		char *n[]={"sh","-c" ,input, NULL};
+		execvp(n[0],n);
+		exit(status);
+	}
+	else {
+		wait(&status);
+	}
+}
+
 
 void runBuiltIn(int i){
 	char* command= CommandTable[i].name;

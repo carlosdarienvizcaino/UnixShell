@@ -2,6 +2,7 @@
 #define COMMANDS_H
 #include "structures.h"
 #include "glob.h"
+char input[500];
 
 void printPrompt();
 void execute();
@@ -18,6 +19,8 @@ void printCommandTable();
 char* getCurrentDirectory();
 void printContentInCurrentDirectory();
 void runPipe(int i);
+void God(int i);
 char** matchPattern(char** a, char** patternBuffer, int count);
+
 
 #endif 
