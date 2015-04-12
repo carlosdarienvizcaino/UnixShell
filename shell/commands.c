@@ -82,9 +82,11 @@ void printPrompt(){
 void execute(){
 	int i;
 	for(i=0;i<n_commands;i++){
-		
+		doAlias(i);
+		environmentExpansion(i);
+		environmentExpansion(i);
 		if(checkForBuiltIn(CommandTable[i].name)){
-			doAlias(i);
+			
 			runBuiltIn(i);
 		}
 		
@@ -285,6 +287,24 @@ int doAlias(int i){
 	}
 
 	return 0;
+}
+
+void environmentExpansion(i){
+	int n_args=CommandTable[i].argsCount;
+	int j;
+	int k;
+	int check=0;
+	for(j=0;j<n_args;j++){
+		char* currArg=CommandTable[i].args->args[j];
+		if(strlen(currArg)>3){
+			if(currArg[0]=='$' && currArg[1]=='{' && currArg[strlen(currArg)-1]=='}'){
+				currArg=currArg+2;
+				currArg[strlen(currArg)-1]='\0';
+				if(getenv(currArg)!=NULL)
+				CommandTable[i].args->args[j]=getenv(currArg);
+			}
+		}
+	}
 }
 
 void printContentInCurrentDirectory(){
