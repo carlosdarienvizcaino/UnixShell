@@ -83,7 +83,9 @@ void execute(){
 	int i;
 	int check=0;
 	for(i=0;i<n_commands;i++){
-		doAlias(i);
+		int n_args= CommandTable[i].argsCount;
+		if(n_args!=0) doAlias(i);
+		else doAliasForNoArgs(i);
 		environmentExpansion(i);
 		if(checkForBuiltIn(CommandTable[i].name)){
 			check=1;
@@ -92,7 +94,7 @@ void execute(){
 	}
 
 	if(check==0){
-		God(0);
+		runCommand(0);
 	}
 	clearInput();
 	
@@ -148,7 +150,7 @@ void runPipe(int i){
 	}
 }
 
-void runCommand(int i){
+void runCommands(int i){
 	
 	int status;
 	int n_args= CommandTable[i].argsCount;
@@ -209,7 +211,7 @@ char** matchPattern(char** a, char** patternBuffer, int count){
 	return &*a;
 }
 
-void GodsHelper(){
+void commandHelper(){
 	int i;
 	int k;
 	int chars=0;
@@ -228,9 +230,9 @@ void GodsHelper(){
 	input[strlen(input)-1]='\0';
 }
 
-void God(int i){
+void runCommand(int i){
 	int status;
-	GodsHelper();
+	commandHelper();
 	if ( fork() == 0 ){
 		char *n[]={"sh","-c" ,input, NULL};
 
@@ -305,6 +307,16 @@ int doAlias(int i){
 	}
 
 	return 0;
+}
+
+int doAliasForNoArgs(int i){
+	char *name= CommandTable[i].name;
+	if(checkForInfiniteAlias(name)==1){
+		printf("ALIAS LOOP\n");
+	}
+	else if(returnNestedAlias(name)!=0){
+		CommandTable[i].name=returnNestedAlias(name);
+	}
 }
 
 void environmentExpansion(i){
