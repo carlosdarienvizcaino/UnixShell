@@ -33,16 +33,17 @@ struct arguments *arg;
 
 %token <str> WORD
 %token <arg> argv
+%token END_OF_FILE
 %type<arg> arg_list
 
 %%
 
 commands: /* empty */
-        | commands arg_list {execute();}
+        | commands arg_list{execute();}
+        | eof
 
 arg_list:
        WORD{
-
            // Creates a new Command: set argsCount to zero and the name
            reset();
            createNewCommand($1);
@@ -66,6 +67,10 @@ arg_list:
 
         }
         ;
+eof:
+    END_OF_FILE{
+        exit(1);
+    }
        
 %%
 

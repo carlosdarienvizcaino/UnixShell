@@ -86,7 +86,10 @@ void execute(){
 	int check=0;
 	for(i=0;i<n_commands;i++){
 		int n_args= CommandTable[i].argsCount;
-		if(n_args!=0) j=doAlias(i);
+		if(strcmp("unalias",CommandTable[i].name)==0){
+				j=1;
+		}
+		else if(n_args!=0) j=doAlias(i);
 		else{
 		k=doAliasForNoArgs(i);
 		}
