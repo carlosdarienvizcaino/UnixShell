@@ -264,21 +264,31 @@ void runBuiltIn(int i){
 			chdir(getenv("HOME"));
 		}
 		else if(n_args==1){
-			chdir(CommandTable[i].args->args[n_args-1]);
+			if(chdir(CommandTable[i].args->args[n_args-1])!=0){
+				printf("Directory not recognized\n");
+			}
 		}
 		else{
-			printf("ERROR: TOO MANY ARGUMENTS");
+			printf("ERROR: Wrong number of arguments\n");
 		}
 	}
 	
-	else if(strcmp(command,"setenv")==0 && n_args==2){
+	else if(strcmp(command,"setenv")==0){
+		if(n_args!=2){
+			printf("ERROR: Wrong number of arguments\n");
+		}
+		else
 		setenv(CommandTable[i].args->args[n_args-2],CommandTable[i].args->args[n_args-1],1);
 	}
-	else if(strcmp(command,"printenv")==0 && n_args==0){
-		int i=0;
-		while(environ[i])
-           printf("%s\n",environ[i++]);
-      }
+	else if(strcmp(command,"printenv")==0){
+		 if(n_args==0){
+			int i=0;
+			while(environ[i])
+         	  printf("%s\n",environ[i++]);
+    	 	 }
+    	  else
+    	  	printf("ERROR: Wrong number of arguments\n");
+    		}
       
     else if(strcmp(command,"alias")==0){
     	if(n_args==0) alias_printList(aliasNode);
@@ -288,6 +298,9 @@ void runBuiltIn(int i){
     		char* second=CommandTable[i].args->args[n_args-1];
     		push(&aliasNode,first,second);
     	}
+    	else{
+    		printf("ERROR: Wrong number of arguments\n");
+    	}
     }
     
     else if(strcmp(command,"unalias")==0 && n_args==1){
@@ -295,10 +308,13 @@ void runBuiltIn(int i){
     		removeAlias(&aliasNode,first);
     }
     else if(strcmp(command,"bye")==0){
+    	printf("Exiting...\n");
     	exit(0);
     }
+    else{
+    	printf("Command not recognized\n");
+    }
     
-	//reset();
 }
 // ---------------------------------------- 
 void reset(){
