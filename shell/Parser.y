@@ -57,11 +57,6 @@ arg_list:
               // Create new command
               createNewCommand($2);
 
-          } 
-          else if (checkForMetaChar($2)){
-
-              // Add character to metaChar array
-              addMetaCharToTable($2);
           }
           else {
 

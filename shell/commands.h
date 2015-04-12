@@ -19,9 +19,11 @@ void printCommandTable();
 char* getCurrentDirectory();
 void printContentInCurrentDirectory();
 void runPipe(int i);
+void GodsHelper();
 void God(int i);
 char** matchPattern(char** a, char** patternBuffer, int count);
 void environmentExpansion(int i);
+void clearInput();
 
 
 #endif 

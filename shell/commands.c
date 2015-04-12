@@ -81,31 +81,28 @@ void printPrompt(){
 // ----------------------------------------
 void execute(){
 	int i;
+	int check=0;
 	for(i=0;i<n_commands;i++){
 		doAlias(i);
 		environmentExpansion(i);
-		environmentExpansion(i);
 		if(checkForBuiltIn(CommandTable[i].name)){
-			
+			check=1;
 			runBuiltIn(i);
 		}
-		
-		else if ( checkForCommand(CommandTable[i].name)){
-				//God(0);
-				runCommand(i);
-				
-			// If this command has a correspointing meta character
-			if ( metachar_count-1 >= i ){
-
-				if (strcmp("|",MetaCharsTable[i])==0){
-					runPipe(i);
-				}
-			}
-			
-		}
-		
 	}
+
+	if(check==0){
+		God(0);
+	}
+	clearInput();
 	
+}
+
+void clearInput(){
+	int k;
+	for(k=0;k<500;k++){
+		input[k]='\0';
+	}
 }
 
 
@@ -212,10 +209,31 @@ char** matchPattern(char** a, char** patternBuffer, int count){
 	return &*a;
 }
 
+void GodsHelper(){
+	int i;
+	int k;
+	int chars=0;
+	for(i=0;i<n_commands;i++){
+		char* currCommand= CommandTable[i].name;
+		strcat(input,currCommand);
+		if(n_commands!=0){
+			strcat(input," ");
+		}
+		int n_args= CommandTable[i].argsCount;
+		for(k=0;k<n_args;k++){
+			strcat(input,CommandTable[i].args->args[k]);
+			strcat(input," ");
+		}	
+	}
+	input[strlen(input)-1]='\0';
+}
+
 void God(int i){
 	int status;
+	GodsHelper();
 	if ( fork() == 0 ){
 		char *n[]={"sh","-c" ,input, NULL};
+
 		execvp(n[0],n);
 		exit(status);
 	}
@@ -280,7 +298,7 @@ void reset(){
 
 int doAlias(int i){
 	if(checkForInfiniteAlias(CommandTable[i].args->args[0])==1){
-		printf("ALIAS LOOP MOTHERFUCKER\n");
+		printf("ALIAS LOOP\n");
 	}
 	else if(returnNestedAlias(CommandTable[i].args->args[0])!=0){
 		CommandTable[i].args->args[0]=returnNestedAlias(CommandTable[i].args->args[0]);
@@ -307,30 +325,5 @@ void environmentExpansion(i){
 	}
 }
 
-void printContentInCurrentDirectory(){
-	
-	printf("Inside: printContentInCurrentDirectory()\n");
-	char* currentDirectory = getCurrentDirectory();
-	DIR* dirp = opendir( getCurrentDirectory() );
-	struct dirent* dp;
-	while ((dp = readdir(dirp)) != NULL){
-		printf("%s ",dp->d_name);
-		dp++;
-	}
-	printf("\n");
-}
-
-
-char* getCurrentDirectory(){  //test function to get current directory
-	size_t size= sizeof(char) * 1024;
-	char * buf= (char *)malloc(size);
-	char * cwd;
-	if((cwd = getcwd(buf,size))!=NULL){
-
-		//printf("%s",cwd);
-    	 return cwd;
-	}
-	return NULL;
-}
 
 
