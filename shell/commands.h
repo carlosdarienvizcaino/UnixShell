@@ -9,7 +9,7 @@ void execute();
 void runBuiltIn();
 void doLS();
 void reset();
-int aliasExecution();
+int doAlias(int i);
 int checkForMetaChar(char* c);
 void createNewCommand(char* c);
 void addArgToCurrentCommand(char* arg);

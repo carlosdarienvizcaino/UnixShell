@@ -80,28 +80,28 @@ void printPrompt(){
 }
 // ----------------------------------------
 void execute(){
-	
-
 	int i;
 	for(i=0;i<n_commands;i++){
 		
 		if(checkForBuiltIn(CommandTable[i].name)){
+			doAlias(i);
 			runBuiltIn(i);
 		}
+		
 		else if ( checkForCommand(CommandTable[i].name)){
-				God(0);
-				//runCommand(i);
+				//God(0);
+				runCommand(i);
 				
 			// If this command has a correspointing meta character
 			if ( metachar_count-1 >= i ){
 
 				if (strcmp("|",MetaCharsTable[i])==0){
-
 					runPipe(i);
 				}
 			}
 			
 		}
+		
 	}
 	
 }
@@ -175,9 +175,12 @@ void runCommand(int i){
 	char** b;
 	if(patternBufferCount>0)
 	b= matchPattern(a,patternBuffer,count);
-	else b=a;
+	else{ 
+		a[count]=NULL;
+		b=a;
+	}
 	if ( fork() == 0 ){
-		execvp(CommandTable[i].name,b) ;
+		execvp(CommandTable[i].name,a) ;
 		exit(status);
 	}
 	else {
@@ -185,7 +188,6 @@ void runCommand(int i){
 		wait(&status);
 	}
 
-	//printf("Exiting...\n");
 	
 }
 
@@ -273,21 +275,15 @@ void reset(){
 	metachar_count = 0;
 }
 // ----------------------------------------
-int aliasExecution(char *c){
-	//if(checkForInfiniteAlias(c)==1){
-		//printf("Alias loop");
-		//return 1;
-	//}
 
-	/*
-	 if(returnNestedAlias(c)!=0){
-		printf("THIS RUNS\n");
-		Command->args->args[0]=returnNestedAlias(c);
+int doAlias(int i){
+	if(checkForInfiniteAlias(CommandTable[i].args->args[0])==1){
+		printf("ALIAS LOOP MOTHERFUCKER\n");
 	}
-	else if(aliasExists(&aliasNode,c)){
-		Command->args->args[0]= retrieveValue(&aliasNode,c);
+	else if(returnNestedAlias(CommandTable[i].args->args[0])!=0){
+		CommandTable[i].args->args[0]=returnNestedAlias(CommandTable[i].args->args[0]);
 	}
-	*/
+
 	return 0;
 }
 

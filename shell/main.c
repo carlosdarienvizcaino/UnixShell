@@ -15,8 +15,8 @@ int main(){
 shellInit();
 while(1){
   printPrompt();
-  fgets(input,sizeof(input),stdin);
-    yy_scan_string(input);
+//  fgets(input,sizeof(input),stdin);
+// yy_scan_string(input);
   yyparse();
   }
 

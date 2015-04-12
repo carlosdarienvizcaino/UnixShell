@@ -29,13 +29,12 @@ void push(alias_node **head, char* alias, char* value){
 
 char* retrieveValue(alias_node **head, char* alias){
 	alias_node* curr=*head;
-	while(curr!=NULL && strcmp(curr->alias,alias)!=0){
-       		curr=curr->next;
-        }
-	if(strcmp(curr->alias,alias)==0){
-		return curr->value;
+	while(curr!=NULL){
+		if(strcmp(curr->alias,alias)==0){
+			return curr->value;
+		}
+		curr=curr->next;
 	}
-
 	return 0;
    
 }
@@ -88,27 +87,54 @@ int removeAlias(alias_node **head,char *alias){
 }
 
 int checkForInfiniteAlias(char *c){
-	char* currVal;
+	char* currVal=retrieveValue(&aliasNode,c);
 	char* nextVal;
-	if(aliasExists(&aliasNode,c)){
-		currVal=retrieveValue(&aliasNode,c);
-		if(aliasExists(&aliasNode,currVal)){
-			nextVal=retrieveValue(&aliasNode,currVal);
-		}
-		if(strcmp(c,nextVal)==0) return 1;
+	if(currVal!=NULL) nextVal=retrieveValue(&aliasNode,currVal);
+	if(nextVal==NULL) {
+		return 0;
 	}
+	char *check[500];
+	int count=0;
+	int k;
+	int j;
+	check[count++]=c;
+	currVal=retrieveValue(&aliasNode,check[count-1]);
+	while(currVal!=NULL && nextVal != NULL){
+		currVal=retrieveValue(&aliasNode,check[count-1]);
+		if(currVal!=NULL) nextVal=retrieveValue(&aliasNode,currVal);
+		if(currVal==NULL || nextVal == NULL) return 0;
+		check[count++]=nextVal;
+		for(j=0;j<count;j++){
+			for(k=j;k<count;k++){
+				if(strcmp(check[j],check[k])==0 && k!=j){
+					return 1;
+				}
+			}
+		}
+
+	}
+	
 	return 0;
 }
 
 char* returnNestedAlias(char *c){
-	char* currVal;
-	if(aliasExists(&aliasNode,c)){
-		currVal=retrieveValue(&aliasNode,c);
-		if(aliasExists(&aliasNode,currVal)){
-			return retrieveValue(&aliasNode,currVal);
+	char* currVal=retrieveValue(&aliasNode, c);
+	if(currVal==NULL) return 0;
+
+	char* val[1000];
+	int count=0;
+	val[count++]=currVal;
+	while(currVal!=NULL){
+		if(retrieveValue(&aliasNode,currVal)!=NULL){
+			currVal=retrieveValue(&aliasNode,currVal);
+			val[count++]=currVal;
+		}
+		else{
+			break;
 		}
 	}
-	return 0;
+	return val[count-1];
+
 }
 
 
