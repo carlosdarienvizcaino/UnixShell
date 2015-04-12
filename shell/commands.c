@@ -81,19 +81,26 @@ void printPrompt(){
 // ----------------------------------------
 void execute(){
 	int i;
+	int j;
+	int k;
 	int check=0;
 	for(i=0;i<n_commands;i++){
 		int n_args= CommandTable[i].argsCount;
-		if(n_args!=0) doAlias(i);
-		else doAliasForNoArgs(i);
+		if(n_args!=0) j=doAlias(i);
+		else{
+		k=doAliasForNoArgs(i);
+		}
 		environmentExpansion(i);
 		if(checkForBuiltIn(CommandTable[i].name)){
 			check=1;
-			runBuiltIn(i);
 		}
 	}
 
-	if(check==0){
+	if(check==1 && (j==1 || k==1)){
+		runBuiltIn(0);
+	}
+
+	if(check==0 && (j==1 || k==1) ){
 		runCommand(0);
 	}
 	clearInput();
@@ -301,22 +308,27 @@ void reset(){
 int doAlias(int i){
 	if(checkForInfiniteAlias(CommandTable[i].args->args[0])==1){
 		printf("ALIAS LOOP\n");
+		return 0;
 	}
 	else if(returnNestedAlias(CommandTable[i].args->args[0])!=0){
 		CommandTable[i].args->args[0]=returnNestedAlias(CommandTable[i].args->args[0]);
+		return 1;
 	}
 
-	return 0;
+	return 1;
 }
 
 int doAliasForNoArgs(int i){
 	char *name= CommandTable[i].name;
 	if(checkForInfiniteAlias(name)==1){
 		printf("ALIAS LOOP\n");
+		return 0;
 	}
 	else if(returnNestedAlias(name)!=0){
 		CommandTable[i].name=returnNestedAlias(name);
+		return 1;
 	}
+	return 1;
 }
 
 void environmentExpansion(i){
