@@ -29,7 +29,7 @@ int main(){
 
 shellInit();
 while(1){
-  //printPrompt();
+  printPrompt();
   yyparse();
   }
 
